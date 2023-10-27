@@ -5,7 +5,7 @@
 Task is to test them
 
 
-1.) for static file serving
+1) for static file serving
 
     - same files frequently
     - small files (like thumbnails, svg collection upto 10k)
@@ -23,6 +23,15 @@ Task is to test them
     - docker image documentation
     - size on disk
     - memory consumption
+
+* Notes:
+
+
+  I've used normal nginx image since it's recommended in the docs,
+
+  Test can be faulty since docker-proxy gets saturated ( 100% cpu )
+
+  I want to experiment memory server ( will store /dist folder in memory)
 
 
 
