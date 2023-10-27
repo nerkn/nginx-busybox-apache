@@ -1,0 +1,56 @@
+version: "3.1"
+
+# example file to start multiple services
+services:
+  backend:
+    image: node:20
+    volumes:
+      - ./yarn:/home/node/.cache/yarn
+      - ./backend:/app
+      - ./public:/app/public
+    working_dir: /app
+    user: node
+    entrypoint: ["bash", "-c", "yarn install && yarn run dev"]
+    ports:
+      - "3000:3000"
+  frontend:
+    image: node:20
+    volumes:
+      - ./yarn:/usr/local/share/.cache/yarn
+      - ./frontend:/app
+      - ./public:/app/public
+    ports:
+      - "3053:3053" #development
+      - "3054:3054" #preview
+    user: node
+    working_dir: /app
+    links:
+      - backend
+    entrypoint: ["bash", "-c", "yarn install && yarn run dev"]
+  busybox:
+    image: busybox
+    volumes:
+      - ./frontend/dist:/app
+      - ./busybox/httpd.conf:/etc/httpd.conf
+    ports:
+      - 3908:80
+
+    entrypoint: ["sh", "-c", "sleep infinity"]
+  nginx:
+    image: nginx
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./nginx/nginx.conf:/etc/httpd.conf
+
+    ports:
+      - 3909:80
+  apache:
+    image: httpd
+    volumes:
+      - ./frontend/dist:/usr/local/apache2/htdocs/
+      - ./apache/my-httpd.conf:/usr/local/apache2/conf/httpd.conf
+
+    ports:
+      - 3907:80
+
+
